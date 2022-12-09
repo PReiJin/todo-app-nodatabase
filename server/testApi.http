@@ -1,0 +1,30 @@
+GET http://localhost:5001 HTTP/1.1
+
+### Get all todos
+GET http://localhost:5001/api/todos HTTP/1.1
+
+### check with valid data
+POST http://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{
+    "title": "check add todo",
+    "body": "make post request to api order to check create todo",
+    "done": false
+}
+
+### Check with invalid data
+POST http://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{
+    "ttle": "check add todo",
+    "by": "make post request to api order to check create todo",
+    "de": false
+}
+
+### Check with empty data
+POST http://localhost:5001/api/todos HTTP/1.1
+Content-Type: application/json
+
+{}
