@@ -59,20 +59,20 @@ func main() {
 		return c.Status(500).SendString("Not implement")
 	})
 	app.Delete("api/todos/:id", func(c *fiber.Ctx) error {
+		if len(todos) == 0 {
+			return c.Status(401).SendString("Invalid id")
+		}
 		id, err := c.ParamsInt("id")
 		if err != nil {
 			return c.Status(401).SendString("Invalid id")
 		}
-		for i, t := range todos {
-			if t.ID == id {
-				id = i
-				break
+		for i := 0; i < len(todos); i++ {
+			if todos[i].ID == id {
+				todos = append(todos[:i], todos[i+1:]...)
 			}
 		}
-		todos = append(todos[:id], todos[id+1:]...)
 		return c.JSON(fiber.Map{
 			"message": "Deleted success",
-			"data":    todos[id],
 		})
 	})
 	app.Listen(":5001")

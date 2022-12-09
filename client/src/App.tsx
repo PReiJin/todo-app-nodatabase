@@ -1,8 +1,9 @@
-import {Box, Flex, List, ThemeIcon} from '@mantine/core'
+import {Box, Container, Flex, List, ThemeIcon} from '@mantine/core'
 import { ListItem } from '@mantine/core/lib/List/ListItem/ListItem'
-import { CheckCircleFillIcon } from '@primer/octicons-react'
+import { CheckCircleFillIcon, TrashIcon } from '@primer/octicons-react'
 import useSWR from 'swr'
 import AddTodo from './components/add-todo.component'
+import TodoCard from './components/todo-card.componen'
 export const BASEURL = "http://localhost:5001"
 export interface ITodo {
   id: number,
@@ -20,6 +21,13 @@ function App() {
     }
     mutate(fetcher('api/todos'))
   }
+  const deleteTodo = async (id:number) => {
+    const deleted= await fetch(`${BASEURL}/api/todos/${id}`, {method: "DELETE"})
+    if (!deleted.ok){
+      console.log(deleted.statusText)
+    }
+    mutate(fetcher('api/todos'))
+  }
   return (
     <Box
     sx={(theme) => ({
@@ -32,23 +40,13 @@ function App() {
     <List spacing='xs' size='sm' mb={12} center>
       {data?.map((todo: ITodo) =>{
         return (
-           <List.Item
-              onClick={() => markTodoAdDone(todo.id)}
-              key={`todo_list__${todo.id}`}
-              icon={
-                todo.done ? (
-                  <ThemeIcon color="teal" size={24} radius="xl">
-                    <CheckCircleFillIcon size={20} />
-                  </ThemeIcon>
-                ) : (
-                  <ThemeIcon color="gray" size={24} radius="xl">
-                    <CheckCircleFillIcon size={20} />
-                  </ThemeIcon>
-                )
-              }
-            >
-              {todo.title}
-            </List.Item>
+          <Flex justify='space-between' key={`todo_list__${todo.id}`}>
+            <TodoCard 
+              todo={todo}
+              markTodoAdDone={markTodoAdDone}
+              deleteTodo={deleteTodo}
+            />
+          </Flex>
         )
       })}
     </List>
